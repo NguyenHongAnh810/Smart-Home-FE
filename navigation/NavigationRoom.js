@@ -90,19 +90,19 @@ const Tab = createBottomTabNavigator();
                 style: {
                     position: 'absolute',
                     bottom: 0,
-                    left: 20,
-                    right: 20,
+                    left: 40,
+                    right: 40,
                     elevation: 0,
                     backgroundColor: Colors.gray,
-                    borderRadius: 15,
-                    height: 44,
+                    borderRadius: 16,
+                    height: 32,
                     ...styles.shadow,
                 },
             }}>
             <Tab.Screen name="LivingRoom" component={LivingRoom} options={{
                 tabBarIcon : ({ focused }) => (
                     <View style={{alignItems:'center', justifyContent:'center'}}>
-                        <MaterialCommunityIcons name="sofa" color={focused ? '#407BFF' : '#748c94'} size={20} />
+                        {/* <MaterialCommunityIcons name="sofa" color={focused ? '#407BFF' : '#748c94'} size={20} /> */}
                         <Text style={{ color: focused ? '#407BFF'  : '#748c94', fontSize: 12 }}>LivingRoom</Text>
                     </View>
                 ),
@@ -110,7 +110,7 @@ const Tab = createBottomTabNavigator();
             <Tab.Screen name="BedRoom" component={BedRoom} options={{
                 tabBarIcon : ({ focused }) => (
                     <View style={{alignItems:'center', justifyContent:'center'}}>
-                        <Ionicons name="bed" color={focused ? '#407BFF'  : '#748c94'} size={20} />
+                        {/* <Ionicons name="bed" color={focused ? '#407BFF'  : '#748c94'} size={20} /> */}
                         <Text style={{ color: focused ? '#407BFF'  : '#748c94',  fontSize: 12 }}>BedRoom</Text>
                     </View>
                 ),

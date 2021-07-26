@@ -17,7 +17,7 @@ const Home = props => {
   const {setcheck} = useContext(StateGlobal);
   return (
       <View>
-        <View style={{height: 560 }}>
+        <View style={{height: 580 }}>
         <NavigationRoom></NavigationRoom>
         </View>
       </View>
