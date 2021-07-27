@@ -1,0 +1,14 @@
+com/smarthome/MainActivity.java
+ com.smarthome.MainActivity
+com/smarthome/ReactNativeFlipper.java
+ com.smarthome.ReactNativeFlipper
+ com.smarthome.ReactNativeFlipper$1
+ com.smarthome.ReactNativeFlipper$2
+ com.smarthome.ReactNativeFlipper$2$1
+com/smarthome/BuildConfig.java
+ com.smarthome.BuildConfig
+com/smarthome/MainApplication.java
+ com.smarthome.MainApplication
+ com.smarthome.MainApplication$1
+com/facebook/react/PackageList.java
+ com.facebook.react.PackageList
