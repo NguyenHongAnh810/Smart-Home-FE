@@ -203,7 +203,7 @@ export default function LivingRoom() {
 
       <SafeAreaView
         style={{
-          height: 320,
+          height: 300,
           width: (9 * WIDTH) / 10,
           marginTop: datas.length >= 3 ? 20 : 240,
         }}>

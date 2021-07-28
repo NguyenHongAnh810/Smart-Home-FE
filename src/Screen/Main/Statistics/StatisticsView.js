@@ -1,127 +1,49 @@
-import React from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
-import { LineChart } from 'react-native-chart-kit'
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, ScrollView} from 'react-native';
 
-export default function Statistics() {
-    return (
-        <View style={{flex: 1}}>
-            <View style={styles.container}>
-                <Text>Living Room</Text>
-                <View style={{marginTop: 32}}>
-                <LineChart
-                    bezier
-                    withHorizontalLabels={false}
-                    withVerticalLabels={false}
-                    data={{
-                        labels: [' jan', ' feb', ' mar', ' apr', ' june', ' july'],
-                        datasets: [
+import Chart from './Chart';
+import {Picker} from '@react-native-picker/picker';
 
-                            {
-                                data: [10, -4, 6, -8, 80, 20],
-                                strokeWidth: 2,
-                                color: (opacity = 1) => `rgba(255,0,0,${opacity})`
-                            },
-                            {
-                                data: [5, 8, 6, 9, 8, 2, -2],
-                                strokeWidth: 2,
-                                color: (opacity = 1) => `rgba(0,102,0, ${opacity})`,
-                            },
-                            {
-								data: [2, 4, 6, 8, 8, 2, 10],
-								strokeWidth: 2,
-								color: (opacity = 1) => `rgba(0,0,102, ${opacity})`, // optional
-							},
-                        ],
-                        legend: ['Temperature', 'Humid', 'PPM'],
-                    }}
-                    width={Dimensions.get('window').width - 16}
-                    height={200}
-                    chartConfig={{
-                        backgroundColor: '#1cc910',
-                        backgroundGradientFrom: '#eff3ff',
-                        backgroundGradientTo: '#efefef',
-                        decimalPlaces: 2,
-                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        style: {
-                            borderRadius: 16,
-                        },
-                    }}
-                    style={{
-                        borderRadius: 16,
-                    }}
-                />
-                </View>
-            </View>
-            <View style={styles.container}>
-                <Text>Bed Room</Text>
-                <View style={{marginTop: 32}}>
-                <LineChart
-                    bezier
-                    withHorizontalLabels={false}
-                    withVerticalLabels={false}
-                    data={{
-                        labels: [' jan', ' feb', ' mar', ' apr', ' june', ' july'],
-                        datasets: [
+const Statistics = props => {
+  const [selectedValue, setSelectedValue] = useState('Now');
 
-                            {
-                                data: [10, -4, 6, -8, 80, 20],
-                                strokeWidth: 2,
-                                color: (opacity = 1) => `rgba(255,0,0,${opacity})`
-                            },
-                            {
-                                data: [5, 8, 6, 9, 8, 2, -2],
-                                strokeWidth: 2,
-                                color: (opacity = 1) => `rgba(0,102,0, ${opacity})`,
-                            },
-                            {
-								data: [2, 4, 6, 8, 8, 2, 10],
-								strokeWidth: 2,
-								color: (opacity = 1) => `rgba(0,0,102, ${opacity})`, // optional
-							},
-                        ],
-                        legend: ['Temperature', 'Humid', 'PPM'],
-                    }}
-                    width={Dimensions.get('window').width - 16}
-                    height={200}
-                    chartConfig={{
-                        backgroundColor: '#1cc910',
-                        backgroundGradientFrom: '#eff3ff',
-                        backgroundGradientTo: '#efefef',
-                        decimalPlaces: 2,
-                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        style: {
-                            borderRadius: 16,
-                        },
-                    }}
-                    style={{
-                        borderRadius: 16,
-                    }}
-                />
-                </View>
-            </View>
+  return (
+    <ScrollView>
+      <View style={{flex: 1}}>
+        <View style={styles.container}>
+          <Picker
+            selectedValue={selectedValue}
+            style={{height: 50, width: 150}}
+            mode={'dropdown'}
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedValue(itemValue);
+            }}>
+            <Picker.Item label="Now" value="Now" />
+            <Picker.Item label="Yesterday" value="Yesterday" />
+            <Picker.Item label="last Week" value="last Week" />
+          </Picker>
         </View>
-    )
-}
+        <Chart
+          id={1}
+          name="Living Room"
+          selectedValue={selectedValue}
+        />
+         <Chart
+          id={2}
+          name="Bed Room"
+          selectedValue={selectedValue}
+        />
+      </View>
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        //margin: 16,
-        flex: 1,
-        flexGrow: 1,
-        //marginBottom: 100,
-        alignItems: 'center',
-        //backgroundColor: Colors.blue_background
-    },
-})
+  container: {
+    flex: 1,
+    paddingTop: 20,
+    alignItems: 'center',
+  },
+});
 
-// import React from 'react'
-// import { View, Text } from 'react-native'
-
-// export default function Statistics() {
-//     return (
-//         <View>
-//             <Text>Statistics</Text>
-//         </View>
-//     )
-// }
-
+export default Statistics;
