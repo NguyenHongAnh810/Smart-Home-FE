@@ -172,7 +172,7 @@ const Statistics = props => {
           // selectedValue={selectedValue}
         />
         <Chart
-          name="Living Room"
+          name="Bed Room"
           dataT={temperature}
           dataH={humid}
           dataP={ppm}
