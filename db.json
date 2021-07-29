@@ -1,0 +1,31 @@
+{
+  "get-air-quality": {
+    "success": true,
+    "id_room": 1,
+    "humidity": 12.01,
+    "temperature": 20,
+    "ppm": 44,
+    "date": "2000-10-08 00:00:00"
+  },
+  "devices1": {
+    "success": true,
+    "id": 1,
+    "type": "Light Buld",
+    "is-on-current": true,
+    "automatic": false
+  },
+  "devices2": {
+    "success": true,
+    "id": 2,
+    "type": "Air Conditioner",
+    "is-on-current": true,
+    "automatic": false
+  },
+  "devices3": {
+    "success": true,
+    "id": 3,
+    "type": "Air Purifier",
+    "is-on-current": true,
+    "automatic": false
+  }
+}
