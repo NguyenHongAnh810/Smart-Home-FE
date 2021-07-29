@@ -24,7 +24,7 @@ const Statistics = props => {
   const [pW, setPW] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
-    fetch('http://192.168.1.11:3000/week')
+    fetch('http://192.168.1.11:3000/api/1/get-get-air-quality')
       .then(resp => resp.json())
       .then(responseJSON => {
     let responseJson = JSON.parse(responseJSON);
@@ -47,7 +47,7 @@ const Statistics = props => {
   }, []);
 
   useEffect(() => {
-    fetch('http://192.168.1.11:3000/day')
+    fetch('http://192.168.1.11:3000/api/1/get-get-air-quality')
         .then(resp => resp.json())
         .then((responseJSON) => {
     let responseJson = JSON.parse(responseJSON);
@@ -82,7 +82,7 @@ const Statistics = props => {
     setTimeout(() => {
       setcount(count+1)
     }, 3000);
-    fetch('http://192.168.1.11:3000/now')
+    fetch('http://192.168.1.11:3000/api/1/get-air-quality')
         .then(resp => resp.json())
         .then((responseJSON) => {
     let responseJson = JSON.parse(responseJSON);
