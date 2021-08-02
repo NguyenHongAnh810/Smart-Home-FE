@@ -25,6 +25,8 @@ export default function LivingRoom() {
     const [humid, setHumid] = useState(80.00);
     const [ppm, setPpm] = useState(40.00);
     const [time, setTime] = useState(0);
+    const [time1, setTime1] = useState(0);
+    const [time2, setTime2] = useState(0);
     const [isEnabledLight, setIsEnabledLight] = useState(false);
     const [isEnabledAir, setIsEnabledAir] = useState(false);
     const [isEnabledPurifier, setIsEnabledPurifier] = useState(false);
@@ -42,7 +44,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://localhost:3001/get-air-quality'
+                    url: 'http://192.168.0.105:3000/api/1/get-air-quality'
                 });
                 const res = response.data;
                 if (res.success) {
@@ -56,15 +58,19 @@ export default function LivingRoom() {
         };
         fetchData();
     }, [time])
+
     useEffect(() => {
+        setTimeout(() => {
+            setTime1((time1 + 1) % 2)
+        }, 1000);
         const fetchData = async () => {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://localhost:3001/devices1'
+                    url: 'http://192.168.0.105:3000/api/6/get-status'
                 });
                 const res = response.data;
-                if (res.success && res.automatic) {
+                if (res.success && res.automatic !== undefined) {
                     setAutoLight(res.automatic)
                     setIsEnabledLight(res['is-on-current'])
                 }
@@ -73,20 +79,20 @@ export default function LivingRoom() {
             }
         };
         fetchData();
-    })
+    }, [time1])
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices1',
-                    data: {automatic: autoLight}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/automatic',
+                    data: { id_device: 6, automatic: autoLight}
                 });
                 const res = response.data;
                 if (res.success) {
-                    console.log(`res`, res)
-                    setAutoLight(res.automatic)
+                    //console.log(`res`, res)
+                    //setAutoLight(res.automatic)
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
@@ -94,61 +100,68 @@ export default function LivingRoom() {
         };
         fetchData();
     }, [changeAutoLight])
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices1',
-                    data: {'is-on-current': isEnabledLight}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/update-status-on',
+                    data: { id_device: 6, 'is-on-current': isEnabledLight}
                 });
                 const res = response.data;
                 if (res.success) {
-                    console.log(`res`, res)
-                    setAutoLight(res.automatic)
-                }
-            } catch (error) {
-                console.log('Failed to get data from server: ', error);
-            }
-        };
-        if(!autoLight)
-        {
-            fetchData();
-        }
-
-    }, [isEnabledLight])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios({
-                    method: 'GET',
-                    url: 'http://localhost:3001/devices2'
-                });
-                const res = response.data;
-                if (res.success && res.automatic) {
-                    setAutoAir(res.automatic)
-                    setIsEnabledAir(res['is-on-current'])
+                    //console.log(`res`, res)
+                    //setAutoLight(res.automatic)
+                    //setIsEnabledLight(res['is-on-current'])
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
             }
         };
         fetchData();
-    })
+        // if(!autoLight)
+        // {
+        //     fetchData();
+        // }
+
+    }, [isEnabledLight])
+
+    useEffect(() => {
+        setTimeout(() => {
+            setTime2((time2 + 1) % 2)
+        }, 3000);
+        const fetchData = async () => {
+            try {
+                const response = await axios({
+                    method: 'GET',
+                    url: 'http://192.168.0.105:3000/api/5/get-status'
+                });
+                const res = response.data;
+                if (res.success && res.automatic != undefined) {
+                    setAutoAir(res.automatic);
+                    setIsEnabledAir(res['is-on-current']);
+                    console.log("LNTT: " + res['is-on-current']);
+                }
+            } catch (error) {
+                console.log('Failed to get data from server: ', error);
+            }
+        };
+        fetchData();
+    }, [time2])
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices2',
-                    data: {automatic: autoAir}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/automatic',
+                    data: {id_device: 5, automatic: autoAir } 
                 });
                 const res = response.data;
                 if (res.success) {
-                    console.log(`res`, res)
-                    setAutoAir(res.automatic)
+                    //console.log(`res`, res)
+                    //setAutoAir(res.automatic)
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
@@ -160,14 +173,14 @@ export default function LivingRoom() {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices2',
-                    data: {'is-on-current': isEnabledAir}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/update-status-on',
+                    data: {id_device: 5, 'is-on-current': isEnabledAir}
                 });
                 const res = response.data;
                 if (res.success) {
-                    console.log(`res`, res)
-                    setAutoLight(res.automatic)
+                    //console.log(`res`, res)
+                    setIsEnabledAir(res.automatic)
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
@@ -179,67 +192,6 @@ export default function LivingRoom() {
         }
 
     }, [isEnabledAir])
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios({
-                    method: 'GET',
-                    url: 'http://localhost:3001/devices3'
-                });
-                const res = response.data;
-                if (res.success && res.automatic) {
-                    setAutoPurifier(res.automatic)
-                    setIsEnabledPurifier(res['is-on-current'])
-                }
-            } catch (error) {
-                console.log('Failed to get data from server: ', error);
-            }
-        };
-        fetchData();
-    })
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices3',
-                    data: {automatic: autoPurifier}
-                });
-                const res = response.data;
-                if (res.success) {
-                    console.log(`res`, res)
-                    setAutoPurifier(res.automatic)
-                }
-            } catch (error) {
-                console.log('Failed to get data from server: ', error);
-            }
-        };
-        fetchData();
-    }, [changeAutoPurifier])
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices3',
-                    data: {'is-on-current': isEnabledPurifier}
-                });
-                const res = response.data;
-                if (res.success) {
-                    console.log(`res`, res)
-                    setAutoLight(res.automatic)
-                }
-            } catch (error) {
-                console.log('Failed to get data from server: ', error);
-            }
-        };
-        if(!autoPurifier)
-        {
-            fetchData();
-        }
-
-    }, [isEnabledPurifier])
     const formatData = (datas, numColumns) => {
         const totalRows = Math.floor(datas.length / numColumns);
         let totalLastRow = datas.length - totalRows * numColumns;

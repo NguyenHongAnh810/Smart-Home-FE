@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
+import axios from 'axios';
 
 import Chart from './Chart';
 import {Picker} from '@react-native-picker/picker';
@@ -23,51 +24,90 @@ const Statistics = props => {
   const [hW, setHW] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
   const [pW, setPW] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 
-  useEffect(() => {
-    fetch('http://192.168.1.11:3000/api/1/get-get-air-quality')
-      .then(resp => resp.json())
-      .then(responseJSON => {
-    let responseJson = JSON.parse(responseJSON);
-    let success = responseJson['success'];
-    if (success == true) {
-      let datas = responseJson['data'];
-      let arrayTemperature = datas.map(element => element.temperature);
-      let arrayHumidity = datas.map(element => element.humidity);
-      let arrayPpm = datas.map(element => element.ppm);
-      setTW(arrayTemperature);
-      setHW(arrayHumidity);
-      setPW(arrayPpm);
-    }else{
-      console.log("data not available")
-    }
-    })
-    .catch(error => {
-      console.error(error);
-    });
-  }, []);
+  let yesterday_ms = 24 * 60 * 60 * 1000;
+  let lastWeak_ms =  7 * 24 * 60 * 60 * 1000;
+
+  function dateToString(date) {
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+
+
+    month = month < 10 ? `0${month}` : month
+    day = day < 10 ? `0${day}` : day
+    hours = hours < 10 ? `0${hours}` : hours
+    minutes = minutes < 10 ? `0${minutes}` : minutes
+    seconds = seconds < 10 ? `0${seconds}` : seconds
+    
+    return `${date.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
 
   useEffect(() => {
-    fetch('http://192.168.1.11:3000/api/1/get-get-air-quality')
-        .then(resp => resp.json())
-        .then((responseJSON) => {
-    let responseJson = JSON.parse(responseJSON);
-    let success = responseJson['success'];
-    if (success == true) {
-      let datas = responseJson['data'];
-      let arrayTemperature = datas.map(element => element.temperature);
-      let arrayHumidity = datas.map(element => element.humidity);
-      let arrayPpm = datas.map(element => element.ppm);
-      setTD(arrayTemperature);
-      setHD(arrayHumidity);
-      setPD(arrayPpm);
-    }else{
-      console.log("data not available")
-    }
+    const fetchData = async () => {
+      try {
+          const response = await axios({
+              method: 'GET',
+              url: 'http://192.168.0.105:3000/api/1/get-air-quality',
+              params: {'from-date': `${dateToString(new Date(Date.now() - yesterday_ms))}`, 'to-date': `${dateToString(new Date())}`}
+          });
+
+          const responseJson = response.data;
+          console.log("NHA");
+          console.log("NHA: " + responseJson.success);
+          let success = responseJson['success'];
+          if (success == true) {
+            let datas = responseJson['data'];
+            let arrayTemperature = datas.map(element => element.temperature);
+            let arrayHumidity = datas.map(element => element.humidity);
+            let arrayPpm = datas.map(element => element.ppm);
+            setTD(arrayTemperature);
+            setHD(arrayHumidity);
+            setPD(arrayPpm);
+          }else{
+            console.log("data not available")
+          }
+          
+      } catch (error) {
+          console.log('NHA Failed to get data from server: ', error);
       }
-    )
-    .catch((error) => {
-      console.error(error);
-    });
+    };
+    fetchData();
+  }, []);
+  
+
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+          const response = await axios({
+              method: 'GET',
+              url: 'http://192.168.0.105:3000/api/1/get-air-quality',
+              params: {'from-date': `${dateToString(new Date(Date.now() - lastWeak_ms))}`, 'to-date': `${dateToString(new Date())}`}
+          });
+
+          const responseJson = response.data;
+          console.log("NHA");
+          console.log("NHA: " + responseJson.success);
+          let success = responseJson['success'];
+          if (success == true) {
+              let datas = responseJson['data'];
+              let arrayTemperature = datas.map(element => element.temperature);
+              let arrayHumidity = datas.map(element => element.humidity);
+              let arrayPpm = datas.map(element => element.ppm);
+              setTW(arrayTemperature);
+              setHW(arrayHumidity);
+              setPW(arrayPpm);
+          } else {
+            console.log("data not available")
+          }
+          
+      } catch (error) {
+          console.log('NHA Failed to get data from server: ', error);
+      }
+    };
+    fetchData();
   }, []);
 
   const [arrayTemperature, setarrayTemperrature] = useState([]);
@@ -81,50 +121,104 @@ const Statistics = props => {
   useEffect(() => {
     setTimeout(() => {
       setcount(count+1)
-    }, 3000);
-    fetch('http://192.168.1.11:3000/api/1/get-air-quality')
-        .then(resp => resp.json())
-        .then((responseJSON) => {
-    let responseJson = JSON.parse(responseJSON);
-    let success = responseJson['success'];
+    }, 1000);
+    const fetchData = async () => {
+      try {
+          const response = await axios({
+              method: 'GET',
+              url: `http://192.168.0.105:3000/api/1/get-air-quality`
+          });
 
-    if (success == true) {
-      let Temperature = responseJson['temperature'];
-      let Humidity = responseJson['humidity'];
-      let Ppm = responseJson['ppm'];
-      let itemT, itemH, itemP;
-      itemT = arrayTemperature;
-      itemH = arrayHumidity;
-      itemP = arrayPpm;
-      if (itemT.length <= 9) {
-        itemT.push(Temperature);
-        itemH.push(Humidity);
-        itemP.push(Ppm);
-      } else {
-        for (var i = 0; i < 9; i++) {
-          itemT[i] = itemT[i + 1];
-          itemH[i] = itemH[i + 1];
-          itemP[i] = itemP[i + 1];
-        }
-        itemT[9] = Temperature;
-        itemH[9] = Humidity;
-        itemP[9] = Ppm;
+          const responseJson = response.data;
+          
+          let success = responseJson['success'];
+
+          if (success == true) {
+            let Temperature = responseJson['temperature'];
+            let Humidity = responseJson['humidity'];
+            let Ppm = responseJson['ppm'];
+            let itemT, itemH, itemP;
+            itemT = arrayTemperature;
+            itemH = arrayHumidity;
+            itemP = arrayPpm;
+            if (itemT.length <= 9) {
+              itemT.push(Temperature);
+              itemH.push(Humidity);
+              itemP.push(Ppm);
+            } else {
+              for (var i = 0; i < 9; i++) {
+                itemT[i] = itemT[i + 1];
+                itemH[i] = itemH[i + 1];
+                itemP[i] = itemP[i + 1];
+              }
+              itemT[9] = Temperature;
+              itemH[9] = Humidity;
+              itemP[9] = Ppm;
+            }
+            setarrayTemperrature(itemT);
+            setarrayHumidity(itemH);
+            setarrayPpm(itemP);
+      
+            setTN(arrayTemperature);
+            setHN(arrayHumidity);
+            setPN(arrayPpm);
+          }else{
+            console.log("data not available")
+          }
+          
+      } catch (error) {
+          console.log('NHA Failed to get data from server: ', error);
       }
-      setarrayTemperrature(itemT);
-      setarrayHumidity(itemH);
-      setarrayPpm(itemP);
+  };
+  fetchData();
+  //   fetch('http://192.168.0.105:3000/api/1/get-air-quality')
+  //       // .then(resp => { 
+         
+  //       //   resp.json();
+  //       // })
+  //       .then((responseJSON) => {
+  //         console.log(responseJSON.json());
+  //   let responseJson = JSON.parse(responseJSON);
 
-      setTN(arrayTemperature);
-      setHN(arrayHumidity);
-      setPN(arrayPpm);
-    }else{
-      console.log("data not available")
-    }
-  }
-      )
-      .catch((error) => {
-        console.error(error);
-      });
+  //   let success = responseJson['success'];
+
+  //   if (success == true) {
+  //     let Temperature = responseJson['temperature'];
+  //     let Humidity = responseJson['humidity'];
+  //     let Ppm = responseJson['ppm'];
+  //     let itemT, itemH, itemP;
+  //     itemT = arrayTemperature;
+  //     itemH = arrayHumidity;
+  //     itemP = arrayPpm;
+  //     if (itemT.length <= 9) {
+  //       itemT.push(Temperature);
+  //       itemH.push(Humidity);
+  //       itemP.push(Ppm);
+  //     } else {
+  //       for (var i = 0; i < 9; i++) {
+  //         itemT[i] = itemT[i + 1];
+  //         itemH[i] = itemH[i + 1];
+  //         itemP[i] = itemP[i + 1];
+  //       }
+  //       itemT[9] = Temperature;
+  //       itemH[9] = Humidity;
+  //       itemP[9] = Ppm;
+  //     }
+  //     setarrayTemperrature(itemT);
+  //     setarrayHumidity(itemH);
+  //     setarrayPpm(itemP);
+
+  //     setTN(arrayTemperature);
+  //     setHN(arrayHumidity);
+  //     setPN(arrayPpm);
+  //   }else{
+  //     console.log("data not available")
+  //   }
+  // }
+  //     )
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
   }, [count]);
 
   useEffect(() => {
